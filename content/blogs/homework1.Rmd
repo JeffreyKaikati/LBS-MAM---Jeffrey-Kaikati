@@ -1,0 +1,122 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T22:42:51-05:00"
+description: Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna
+  sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa
+  sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem
+  consequat tincidunt. Vivamus et sagittis tempus.
+draft: false
+image: pic07.jpg
+keywords: ""
+slug: jeffrey
+title: Aliquam
+---
+
+
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest) # to scrape wikipedia page
+```
+
+
+
+# Where Do People Drink The Most Beer, Wine And Spirits?
+
+Back in 2014, [fivethiryeight.com](https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/) published an article on alchohol consumption in different countries. The data `drinks` is available as part of the `fivethirtyeight` package. Make sure you have installed the `fivethirtyeight` package before proceeding.
+
+
+```{r, load_alcohol_data}
+library(fivethirtyeight)
+data(drinks)
+
+
+# or download directly
+# alcohol_direct <- read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv")
+
+```
+
+
+What are the variable types? Any missing values we should worry about?
+
+
+```{r glimpse_skim_data}
+# YOUR CODE GOES HERE
+glimpse(drinks)
+skim(drinks)
+
+```
+
+
+Make a plot that shows the top 25 beer consuming countries
+
+```{r beer_plot}
+# YOUR CODE GOES HERE
+drinks %>%
+  slice_max(order_by = beer_servings, n=25)%>%
+  mutate(country = fct_reorder(country,beer_servings))%>%
+  ggplot(aes(y=country, x=beer_servings))+
+  geom_col(fill = 'yellow')+
+  labs(title = "Where do people drink more beer?",
+         subtitle = "--",
+         x = "beer_servings", 
+         y = "country",
+         caption = "Source: https://github.com/nytimes/covid-19-data")+
+  NULL
+  
+
+```
+
+Make a plot that shows the top 25 wine consuming countries
+
+```{r wine_plot}
+
+# YOUR CODE GOES HERE
+drinks %>%
+  slice_max(order_by = wine_servings, n=25)%>%
+  mutate(country = fct_reorder(country,wine_servings))%>%
+  ggplot(aes(x=wine_servings, y=country))+
+  geom_col()
+  NULL
+
+```
+
+Finally, make a plot that shows the top 25 spirit consuming countries
+```{r spirit_plot}
+# YOUR CODE GOES HERE
+drinks %>%
+  slice_max(order_by = spirit_servings, n=25)%>%
+  mutate(country = fct_reorder(country,spirit_servings))%>%
+  ggplot(aes(y=country, x=spirit_servings))+
+  geom_col()
+  NULL
+```
+
