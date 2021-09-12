@@ -6,12 +6,10 @@ googleAnalytics: ''
 disqusShortname: ''
 params:
   banner:
-    buttonText: Get Started
+    buttonText: Find out more
     subtitle: |-
-            I am a CentraleSupélec Paris engineer with a solid background in data science, mathematics and business management. 
-            Currently enrolled at London Business School, I am reading for the Masters in Analytics and Management, 
-            and aim to start my career in Strategy Consulting.
-.
+            Welcome to my Portfolio Website!
+            
     title: Hi, my name is Jeffrey
   blog: {}
   contact:
@@ -39,26 +37,26 @@ params:
   footer:
     copyright: London Business School
     enable: yes
-#    quicklinks:
-#      - alt: HTML5 UP
-#        text: 'Design: '
-#        url: https://www.html5up.net
-#    social:
+    quicklinks:
+      - alt: HTML5 UP
+        text: 'Design: '
+        url: https://www.html5up.net
+    social:
 #      - icon: fa-twitter
 #        label: Twitter
 #        url: https://www.twitter.com
-#      - icon: fa-facebook
-#        label: Facebook
-#        url: https://www.facebook.com
-#      - icon: fa-instagram
-#        label: Instagram
-#        url: https://www.instagram.com
+      - icon: fa-facebook
+        label: Facebook
+        url: https://www.facebook.com/jeffrey.kaikati/
+      - icon: fa-instagram
+        label: Instagram
+        url: https://www.instagram.com/jeffkaikati/
 #      - icon: fa-github
 #        label: GitHub
 #        url: https://www.github.com
-#      - icon: fa-linkedin
-#        label: LinkedIn
-#        url: https://www.linkedin.com
+      - icon: fa-linkedin
+        label: LinkedIn
+        url: https://www.linkedin.com/in/jeffrey-kaikati/
 #  image: ''
 #  name: Your name
   navigation:
@@ -84,37 +82,34 @@ params:
     enable: yes
     showcase:
       - image: Photo-pro-compressed.jpg
-        subtitle: Ipsum Dolor Sit Amet
+        subtitle: Details about me 
         title: About me
         url: blogs/jeffrey
-      - image: pic02.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Tempus
+      - image: fond_ext1.jpg
+        subtitle: A few of personal and group projects from engineering school
+        title: CentraleSupélec Projects
         url: blogs/tempus
-      - image: pic03.jpg
-        subtitle: Lorem Etiam Nullam
-        title: Magna
+      - image: lbs.jpeg
+        subtitle: A few of personal and group projects from business school
+        title: London Business School Projects
         url: blogs/magna
-      - image: pic04.jpg
-        subtitle: Nisl Sed Aliquam
-        title: Ipsum
+      - image: wp6611193.jpg
+        subtitle: Download my CV
+        title: CV
         url: blogs/ipsum
-      - image: pic05.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Consequat
-        url: blogs/ipsum
-      - image: pic06.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Etiam
-        url: blogs/ipsum
+      #- image: pic05.jpg
+        #subtitle: Ipsum Dolor Sit Amet
+        #title: Consequat
+        #url: blogs/ipsum
+      #- image: pic06.jpg
+        #subtitle: Feugiat Amet Tempus
+        #title: Etiam
+        #url: blogs/ipsum
   two:
     buttonText: Get Started
     enable: yes
-    subtitle: "Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero.
-      \n    Mauris aliquet magna magna sed nunc rhoncus pharetra. \n    Pellentesque
-      condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia
-      pellentesque lorem ipsum dolor. \n    Nullam et orci eu lorem consequat tincidunt.
-      Vivamus et sagittis libero.\n    Mauris aliquet magna magna sed nunc rhoncus
-      amet pharetra et feugiat tempus."
-    title: Massa libero
+    subtitle: "I am a CentraleSupélec Paris engineer with a solid background in data science, mathematics and business management. 
+            Currently enrolled at London Business School, I am reading for the Masters in Analytics and Management, 
+            and aim to start my career in Strategy Consulting."
+    title: My background and aspirations
     url: blogs
