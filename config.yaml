@@ -16,7 +16,7 @@ params:
     address:
       - city: London
         country: UK
-        street: Surrey Quays Road
+        street: 29 Surrey Quays Road
         title: Address
     buttonClear: Clear
     buttonSend: Send message
@@ -25,7 +25,7 @@ params:
         title: Email
     enable: yes
     phone:
-      - phone: (033) 767434549 x1234
+      - phone: (033) 767434549
         title: Phone
   custom_css: []
   custom_js: []
@@ -108,7 +108,7 @@ params:
   two:
     buttonText: Get Started
     enable: yes
-    subtitle: "I am a CentraleSupélec Paris engineer with a solid background in data science, mathematics and business management. 
+    subtitle: "I am a CentraleSupélec Paris engineer with a solid background in Data Science, Mathematics and Business Management. 
             Currently enrolled at London Business School, I am reading for the Masters in Analytics and Management, 
             and aim to start my career in Strategy Consulting."
     title: My background and aspirations
