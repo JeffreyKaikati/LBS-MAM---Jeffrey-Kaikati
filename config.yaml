@@ -100,11 +100,11 @@ params:
       - image: Stock-Market-1024x440-1-p128rlsvmllx74r6b7j2bl62rmondchxpfk0qx9dh8.jpg
         subtitle: Financial Markets
         title: Portfolio Optimization
-        url: blogs/ipsum
+        url: blogs/portfolio
       - image: _110407477_crypto2.jpg
         subtitle: Crypto Assets
         title: Bitcoin Trading Bot
-        url: blogs/ipsum
+        url: blogs/bitcoin
       - image: Data_301985997-775x500.gif
         subtitle: Applied Statistics with R
         title: Data Analytics Potpourri
@@ -112,15 +112,15 @@ params:
       - image: what-is-a-malware-attack.png
         subtitle: Partial Differential Equation Modelling
         title: Malware Propagation
-        url: https://s3-eu-west-1.amazonaws.com/symp.csm.euprod/london/files/562/56215032be8a74dd1f9e2a8ace110b4d.pdf?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAID3RBESXBCESHUGA%2F20210913%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20210913T212334Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=a26d5a889b59373e30d42d71ea4b49022ffc5e4dc918126ff65338ad2716ecd6
-      - image: fond_ext1.jpg
-        subtitle: Click here to be redirected to the website of the school
-        title: About CentraleSupélec
+        url: blogs/malware
+      - image: collage-flu-covid-virus-cells-blood-under-microscope-209125998.jpg
+        subtitle: SIS Epidemiological Model
+        title: Epidemic Propagation
         url: blogs/Model Representations and Analysis - Rapport.pdf
       - image: lbs.jpeg
-        subtitle: Click here to be redirected to the website of the school
-        title: About London Business School
-        url: https://www.london.edu
+        subtitle: Financial Markets
+        title: Agent Model in Finance
+        url: blogs/KAIKATI-PUGLIESE-1.html
 
 
   two:
