@@ -12,8 +12,14 @@ title: cv
 ---
 
 
-![image info](LBS3-CV.jpg)
+![image information](LBS3-CV.jpg)
 
 ![alt text](LBS3-CV.jpg "CV")
 
-![title](Images/LBS3-CV.jpg)
+![title](./Images/LBS3-CV.jpg)
+
+![Alt text](https://assets.digitalocean.com/articles/alligator/boo.svg "a title")
+
+<img title="a title" alt="Alt text" src="/images/boo.svg">
+
+[![Alt text](https://assets.digitalocean.com/articles/alligator/boo.svg)](https://digitalocean.com)

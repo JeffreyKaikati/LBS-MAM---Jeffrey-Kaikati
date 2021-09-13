@@ -5,10 +5,10 @@ categories:
 date: "2017-10-31T21:28:43-05:00"
 description: ""
 draft: false
-image: pic10.jpg
+image: images/portfolio.jpg
 keywords: ""
 slug: portfolio
-title: portfolio
+title: Portfolio
 ---
 
 

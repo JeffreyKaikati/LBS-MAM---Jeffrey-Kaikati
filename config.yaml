@@ -85,37 +85,51 @@ params:
       - image: Photo-pro-compressed.jpg
         subtitle: Details about me 
         title: About me
-        url: blogs/homework1
+        url: blogs/about_me
         
         
-      - image: fond_ext1.jpg
-        subtitle: A few of personal and group projects from engineering school
-        title: CentraleSupélec Projects
-        url: blogs/homework2
-        
-        
-      - image: lbs.jpeg
-        subtitle: A few of personal and group projects from business school
-        title: London Business School Projects
-        url: blogs/portfolio
-        
-        
-      - image: wp6611193.jpg
+        - image: wp6611193.jpg
         subtitle: Download my CV
         title: CV
         url: blogs/cv
         
+      - image: fond_ext1.jpg
+        subtitle: A few of personal and group projects from engineering school
+        title: CentraleSupélec Projects
+        url: blogs/portfolio
+        
+        
+
+        
+      - image: lbs.jpeg
+        subtitle: A few of personal and group projects from business school
+        title: London Business School Projects
+        url: blogs/homework1
+    
         
       - image: pic05.jpg
         subtitle: Ipsum Dolor Sit Amet
-        title: Consequat
-        url: blogs/ipsum
+        title: Homework2
+        url: blogs/homework2
         
         
       - image: pic06.jpg
         subtitle: Feugiat Amet Tempus
-        title: Etiam
-        url: blogs/ipsum
+        title: Bitcoin
+        url: blogs/bitcoin
+        
+        
+                
+      - image: pic05.jpg
+        subtitle: Ipsum Dolor Sit Amet
+        title: EDP
+        url: blogs/edp
+        
+        
+      - image: pic06.jpg
+        subtitle: Feugiat Amet Tempus
+        title: Homework3
+        url: blogs/homework3
   two:
     buttonText: Get Started
     enable: yes
