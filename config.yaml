@@ -25,8 +25,10 @@ params:
         title: Email
     enable: yes
     phone:
-      - phone: (033) 767434549
-        title: Phone
+      - phone: (+33) 767434549
+        title: Phone - France
+      - phone: (+44) 7570 276472
+        title: Phone - United Kingdom
   custom_css: []
   custom_js: []
   description: Your description
@@ -93,7 +95,7 @@ params:
         subtitle: Website of the school
         title: About CentraleSupélec, Paris-Saclay
         url: https://www.universite-paris-saclay.fr/en
-      - image: lbs.jpeg
+      - image: lbs.jpg
         subtitle: Website of the school
         title: About London Business School
         url: https://www.london.edu
@@ -108,7 +110,7 @@ params:
       - image: Data_301985997-775x500.gif
         subtitle: Applied Statistics with R
         title: Data Analytics Potpourri
-        url: blogs/homework1
+        url: blogs/hmw
       - image: pexels-sora-shimazaki-5935788.jpg
         subtitle: Partial Differential Equation Modelling
         title: Malware Propagation
@@ -120,7 +122,7 @@ params:
       - image: pexels-pixabay-163064.jpg
         subtitle: Financial Markets
         title: Agent Model in Finance
-        url: blogs/KAIKATI-PUGLIESE-1.html
+        url: blogs/all-tps-agents.pdf
 
 
   two:
