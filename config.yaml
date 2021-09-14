@@ -66,17 +66,17 @@ params:
       - name: Get Started
         url: blogs
     button2:
-      - name: Log In
-        url: '#'
+#      - name: Log In
+#        url: '#'
     links:
       - name: Home
         url: '#'
-      - name: Blogs
-        url: blogs
-      - name: Generic Blog
-        url: blogs/ipsum
-      - name: Elements
-        url: elements.html
+#      - name: Blogs
+#        url: blogs
+#      - name: Generic Blog
+#        url: blogs/ipsum
+#      - name: Elements
+#        url: elements.html
     menu: Menu
     subtitle: By HTML5 Up
     title: Forty
@@ -86,7 +86,7 @@ params:
       - image: Photo-pro-compressed.jpg
         subtitle: Biography
         title: About me
-        url: blogs/about_me
+        url: blogs/me
       - image: wp6611193.jpg
         subtitle: Download my CV
         title: CV
@@ -127,7 +127,7 @@ params:
 
   two:
     buttonText: Get Started
-    enable: yes
+    enable: no
     subtitle: "I am a CentraleSupélec Paris engineer with a solid background in Data Science, Mathematics and Business Management. 
             Currently enrolled at London Business School, I am reading for the Masters in Analytics and Management, 
             and aim to start my career in Strategy Consulting."

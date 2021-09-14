@@ -1,0 +1,46 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T22:42:51-05:00"
+description: ""
+draft: false
+image: Photo-pro-compressed.jpg
+keywords: ""
+slug: me
+title: About Me
+---
+
+### Name: Jeffrey KAIKATI
+### National of: Lebanon
+### Resident of: France and The United Kingdom
+### Description: 
+
+##### I am a well-rounded and rigorous engineer with a strong passion for entrepreneurship, business management and financial services.
+
+### Education Background: 
+
+##### In 2017, I left my home country to face the challenge of two intensive years in the French preparatory school Lycée Sainte Geneviève. Beyond enabling me to build robust foundations in Mathematics, this extremely demanding programme taught me the importance of self-discipline and resilience in academic and professional success.
+##### I now hold a Masters in Engineering from CentraleSupélec Engineering School (Graduate School of Université Paris-Saclay) and am currently reading for the Masters in Analytics and Management at London Business School. 
+
+
+
+THis is the R part
+
+```{r}
+knitr::include_graphics("Photo-pro-compressed.jpg")
+```
+
+R part over
+
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+```{r}
+knitr::include_graphics("Photo-pro-compressed.jpg")
+```
+
+  | Un peu de texte
+  
+
+![my_picture](Photo-pro-compressed.jpg)
+

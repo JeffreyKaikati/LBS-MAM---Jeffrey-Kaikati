@@ -5,9 +5,9 @@ categories:
 date: "2017-10-31T22:42:51-05:00"
 description: ""
 draft: false
-image: Photo-pro-compressed.jpg
+image: osPhoto-pro-compressed.jpg
 keywords: ""
-slug: about_me
+slug: me1
 title: About Me
 ---
 
@@ -20,12 +20,17 @@ title: About Me
 
 Solarized dark             |  Solarized Ocean
 :-------------------------:|:-------------------------:
-![test](blogs/output_8_1)  |  ![test2](blogs/output_8_1.png)
+![my_picture](img/blogs/Photo-pro-compressed.jpg)  | Un peu de texte
+
+![my_picture](img/blogs/Photo-pro-compressed.jpg)
 
 
 iohfihfpoefmn
 
+---
 
+image: Photo-pro-compressed.jpg
+---
 vsbvsrbnvosnv
 
 
