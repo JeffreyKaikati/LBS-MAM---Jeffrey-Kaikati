@@ -90,11 +90,11 @@ params:
         title: CV
         url: blogs/JeffreyKaikati_resume-CV121-10sept.pdf
       - image: fond_ext1.jpg
-        subtitle: Click here to be redirected to the website of the school
-        title: About CentraleSupélec
-        url: https://www.centralesupelec.fr/en
+        subtitle: Website of the school
+        title: About CentraleSupélec, Paris-Saclay
+        url: https://www.universite-paris-saclay.fr/en
       - image: lbs.jpeg
-        subtitle: Click here to be redirected to the website of the school
+        subtitle: Website of the school
         title: About London Business School
         url: https://www.london.edu
       - image: Stock-Market-1024x440-1-p128rlsvmllx74r6b7j2bl62rmondchxpfk0qx9dh8.jpg
