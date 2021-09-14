@@ -88,7 +88,7 @@ params:
       - image: wp6611193.jpg
         subtitle: Download my CV
         title: CV
-        url: blogs/LBS3-CV.jpg
+        url: LBS3-CV.jpg
       - image: fond_ext1.jpg
         subtitle: Click here to be redirected to the website of the school
         title: About CentraleSupélec
