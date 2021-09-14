@@ -88,7 +88,7 @@ params:
       - image: wp6611193.jpg
         subtitle: Download my CV
         title: CV
-        url: LBS3-CV.jpg
+        url: blogs/JeffreyKaikati_resume-CV121-10sept.pdf
       - image: fond_ext1.jpg
         subtitle: Click here to be redirected to the website of the school
         title: About CentraleSupélec
@@ -100,11 +100,11 @@ params:
       - image: Stock-Market-1024x440-1-p128rlsvmllx74r6b7j2bl62rmondchxpfk0qx9dh8.jpg
         subtitle: Financial Markets
         title: Portfolio Optimization
-        url: blogs/portfolio
+        url: blogs/ST7-Rapport_ST_Finance.pdf
       - image: _110407477_crypto2.jpg
         subtitle: Crypto Assets
         title: Bitcoin Trading Bot
-        url: blogs/bitcoin
+        url: blogs/Bitcoin.pdf
       - image: Data_301985997-775x500.gif
         subtitle: Applied Statistics with R
         title: Data Analytics Potpourri
@@ -112,12 +112,12 @@ params:
       - image: what-is-a-malware-attack.png
         subtitle: Partial Differential Equation Modelling
         title: Malware Propagation
-        url: blogs/malware
+        url: blogs/KAIKATI-Jeffrey-Projet-EDP.pdf
       - image: collage-flu-covid-virus-cells-blood-under-microscope-209125998.jpg
         subtitle: SIS Epidemiological Model
         title: Epidemic Propagation
         url: blogs/Model Representations and Analysis - Rapport.pdf
-      - image: lbs.jpeg
+      - image: pexels-pixabay-163064.jpg
         subtitle: Financial Markets
         title: Agent Model in Finance
         url: blogs/KAIKATI-PUGLIESE-1.html

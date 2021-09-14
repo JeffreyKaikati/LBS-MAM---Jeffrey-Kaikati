@@ -11,16 +11,31 @@ slug: about_me
 title: About Me
 ---
 
-I am a well-rounded and rigorous engineer with a strong passion for entrepreneurship, business management and financial services. 
-I am currently completing a Master's in Engineering degree at CentraleSupélec Engineering School (Graduate School of Université Paris-Saclay) and heading towards a Master's in Analytics and Management at the London Business School. 
-Dedicated and goal-oriented, I reach my targets through commitment and hard work. 
-Feel free to reach out for any projects or ideas you might have!
+
+#### I am a well-rounded and rigorous engineer with a strong passion for entrepreneurship, business management and financial services. 
+#### I am currently completing a Master's in Engineering degree at CentraleSupélec Engineering School (Graduate School of Université Paris-Saclay) and heading towards a Master's in Analytics and Management at the London Business School. 
+#### Dedicated and goal-oriented, I reach my targets through commitment and hard work. 
+#### Feel free to reach out for any projects or ideas you might have!
 
 
 Solarized dark             |  Solarized Ocean
 :-------------------------:|:-------------------------:
-![](https://...Dark.png)  |  ![](https://...Ocean.png)
+![test](blogs/output_8_1)  |  ![test2](blogs/output_8_1.png)
 
+
+iohfihfpoefmn
+
+
+vsbvsrbnvosnv
+
+
+<p float="left">
+  <img src="/Photo-pro-compressed.jpg" width="100" />
+  <img src="/Photo-pro-compressed.jpg" width="100" /> 
+  <img src="/Photo-pro-compressed.jpg" width="100" />
+</p>
+
+--
 
 Lebanese national, I have been living between Beirut, Paris and London. 
 
