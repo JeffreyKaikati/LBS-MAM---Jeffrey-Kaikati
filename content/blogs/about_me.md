@@ -17,6 +17,10 @@ Dedicated and goal-oriented, I reach my targets through commitment and hard work
 Feel free to reach out for any projects or ideas you might have!
 
 
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+![](https://...Dark.png)  |  ![](https://...Ocean.png)
+
 
 Lebanese national, I have been living between Beirut, Paris and London. 
 
