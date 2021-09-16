@@ -3,13 +3,20 @@ categories:
 - ""
 - ""
 date: "2017-10-31T22:42:51-05:00"
-description: ""
+description: 
 draft: false
-image: Photo-pro-compressed.jpg
+image: 
 keywords: ""
 slug: about_me
 title: About Me
 ---
+
+
+
+
+```{r picture, echo=FALSE, out.width="70%"}
+knitr::include_graphics("/img/blogs/Photo-pro-compressed.jpg", error = FALSE)
+```
 
 ### Name: Jeffrey KAIKATI
 ### National of: Lebanon
@@ -22,28 +29,4 @@ title: About Me
 
 ##### In 2017, I left my home country to face the challenge of two intensive years in the French preparatory school Lycée Sainte Geneviève. Beyond enabling me to build robust foundations in Mathematics, this extremely demanding programme taught me the importance of self-discipline and resilience in academic and professional success.
 ##### I now hold a Masters in Engineering from CentraleSupélec Engineering School (Graduate School of Université Paris-Saclay) and am currently reading for the Masters in Analytics and Management at London Business School. 
-
-
-
-```{r picture, echo=FALSE, out.width="70%"}
-knitr::include_graphics("/img/blogs/Photo-pro-compressed.jpg", error = FALSE)
-```
-
-
-THis is the R part
-
-
-
-R part over
-
-Solarized dark             |  Solarized Ocean
-:-------------------------:|:-------------------------:
-```{r}
-knitr::include_graphics("Photo-pro-compressed.jpg")
-```
-
-  | Un peu de texte
-  
-
-![my_picture](Photo-pro-compressed.jpg)
 
