@@ -1,0 +1,569 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: test
+title: test
+---
+
+title: 'Data Visualization Challenges'
+author: "Awashti Palak, Kaikati Jeffrey, Laffitte Jose, Opre Valeria, Wang Hanyu, Zhang Jasmine "
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+  pdf_document:
+    toc: yes
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest) # to scrape wikipedia page
+
+
+library(httr)
+library(readxl)
+library(infer)
+
+library(broom)
+library(openintro)
+
+```
+
+
+# Challenge 1: Replicating a chart
+
+The purpose of this challenge is to reproduce a plot using `dplyr` and `ggplot2` skills. 
+
+Read the  article [The Racial Factor: There's 77 Counties Which Are Deep Blue But Also Low-Vaxx. Guess What They Have In Common?](https://acasignups.net/21/07/18/racial-factor-theres-77-counties-which-are-deep-blue-also-low-vaxx-guess-what-they-have) and have a look at the attached figure.
+
+1. To get vaccination by county, we will use [data from the CDC](https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-County/8xkx-amqh)
+2. You need to get [County Presidential Election Returns 2000-2020](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ)
+3. Finally, you also need an estimate of the [population of each county](https://www.ers.usda.gov/webdocs/DataFiles/48747/PopulationEstimates.csv?v=2232)
+ 
+
+```{r, cache=TRUE}
+
+# Download CDC vaccination by county
+cdc_url <- "https://data.cdc.gov/api/views/8xkx-amqh/rows.csv?accessType=DOWNLOAD"
+vaccinations <- vroom(cdc_url) %>% 
+  janitor::clean_names() %>% 
+  filter(fips != "UNK") # remove counties that have an unknown (UNK) FIPS code
+
+# Download County Presidential Election Returns
+# https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ
+election2020_results <- vroom(here::here("data", "countypres_2000-2020.csv")) %>% 
+  janitor::clean_names() %>% 
+  
+  # just keep the results for the 2020 election
+  filter(year == "2020") %>% 
+  
+  # change original name county_fips to fips, to be consistent with the other two files
+  rename (fips = county_fips)
+
+# Download county population data
+population_url <- "https://www.ers.usda.gov/webdocs/DataFiles/48747/PopulationEstimates.csv?v=2232"
+population <- vroom(population_url) %>% 
+  janitor::clean_names() %>% 
+  
+  # select the latest data, namely 2019
+  select(fips = fip_stxt, pop_estimate_2019) %>% 
+  
+  # pad FIPS codes with leading zeros, so they are always made up of 5 characters
+  mutate(fips = stringi::stri_pad_left(fips, width=5, pad = "0"))
+
+```
+
+
+```{r}
+#we are going to take a look at the data first and then we will have to merge the data
+
+population_vaccinations <- left_join(population, vaccinations, by="fips")
+
+
+pve <- left_join(population_vaccinations, election2020_results, by="fips")
+# we will group pve by county
+```
+
+```{r}
+
+pve %>%
+  filter(date =="08/03/2021") %>%
+  filter(candidate == "DONALD J TRUMP") %>%
+  filter(series_complete_pop_pct > 1) %>%
+  mutate(percentage_trump= candidatevotes/totalvotes*100) %>%
+  filter(percentage_trump > 1) %>%
+  ggplot(aes(x=percentage_trump, y=series_complete_pop_pct)) +
+  geom_point(aes(size = pop_estimate_2019))+
+  scale_size_continuous(range = c(0.01, 5))+
+  xlim(0,100)+
+  ylim(0,100)+
+  labs(title = "COVID-19 VACCINATION LEVELS OUT OF TOTAL POPULATION BY COUNTY",
+        subtitle = "Most states on FULLY vaccinated only;CA, GA, IA, MI & TX based on total doses administered",
+         x = "2020 Trump Vote %", 
+         y = "Percentage of Total Population Vaccinated",
+         caption = "Centers for Disease Control, COVID Act NOW, state health depts")
+
+pve
+
+```
+
+
+# Challenge 2: Opinion polls for the 2021 German elections
+
+The Guardian newspaper has an [election poll tracker for the upcoming German election](https://www.theguardian.com/world/2021/aug/20/german-election-poll-tracker-who-will-be-the-next-chancellor).
+The list of the opinion polls since Jan 2021 can be found at [Wikipedia](https://en.wikipedia.org/wiki/Opinion_polling_for_the_2021_German_federal_election) and the task is to reproduce the graph similar to the one produced by the Guardian. 
+
+
+The following code will scrape the wikipedia page and import the table in a dataframe.
+
+
+```{r, scrape_wikipedia_polling_data, warnings= FALSE, message=FALSE}
+url <- "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2021_German_federal_election"
+# https://www.economist.com/graphic-detail/who-will-succeed-angela-merkel
+# https://www.theguardian.com/world/2021/jun/21/german-election-poll-tracker-who-will-be-the-next-chancellor
+
+
+# get tables that exist on wikipedia page 
+tables <- url %>% 
+  read_html() %>% 
+  html_nodes(css="table")
+
+
+# parse HTML tables into a dataframe called polls 
+# Use purr::map() to create a list of all tables in URL
+polls <- map(tables, . %>% 
+             html_table(fill=TRUE)%>% 
+             janitor::clean_names())
+
+
+# list of opinion polls
+german_election_polls <- polls[[1]] %>% # the first table on the page contains the list of all opinions polls
+  slice(2:(n()-1)) %>%  # drop the first row, as it contains again the variable names and last row that contains 2017 results
+  mutate(
+         # polls are shown to run from-to, e.g. 9-13 Aug 2021. We keep the last date, 13 Aug here, as the poll date
+         # and we extract it by picking the last 11 characters from that field
+         end_date = str_sub(fieldwork_date, -11),
+         
+         # end_date is still a string, so we convert it into a date object using lubridate::dmy()
+         end_date = dmy(end_date),
+         
+         # we also get the month and week number from the date, if we want to do analysis by month- week, etc.
+         month = month(end_date),
+         week = isoweek(end_date)
+         )
+```
+
+
+
+```{r}
+german_election_polls %>%
+  select(end_date,union, grune, spd, af_d, linke, fdp)%>%
+  ggplot(aes(x=end_date, y= union))+
+  geom_point()+
+  geom_point(data=german_election_polls, aes(x=end_date, y= grune, color= "Green")) +
+  geom_point(data=german_election_polls, aes(x=end_date, y= spd, color= "Red")) +
+  geom_point(data=german_election_polls, aes(x=end_date, y= af_d, color= "Blue")) +
+  geom_point(data=german_election_polls, aes(x=end_date, y= linke, color= "Purple")) +
+  geom_point(data=german_election_polls, aes(x=end_date, y= fdp, color= "Yellow"))
+ 
+german_election_polls %>%
+  select(polling_firm, end_date,union, grune, spd, af_d, linke, fdp) %>%
+  ggplot(aes(x=end_date, y=grune))+
+  geom_point(color = "green")+
+  geom_point(data = german_election_polls, aes(x=end_date, y=spd,color = "red"))+
+  geom_point(data = german_election_polls, aes(x=end_date, y=af_d,color = "blue"))+
+  geom_point(data = german_election_polls, aes(x=end_date, y=linke,color = "purple"))+
+  geom_point(data = german_election_polls, aes(x=end_date, y=fdp,color = "yellow"))+
+  geom_point(data = german_election_polls, aes(x=end_date, y=union))+
+  geom_smooth(data = german_election_polls, aes(x=end_date, y=grune,color = "green", method="lm"))+
+  geom_smooth(data = german_election_polls, aes(x=end_date, y=spd,color = "red", method="lm"))+
+  geom_smooth(data = german_election_polls, aes(x=end_date, y=af_d,color = "blue", method="lm"))+
+  geom_smooth(data = german_election_polls, aes(x=end_date, y=linke,color = "purple", method="lm"))+
+  geom_smooth(data = german_election_polls, aes(x=end_date, y=fdp,color = "yellow", method="lm"))+
+  geom_smooth(data = german_election_polls, aes(x=end_date, y=union, method="lm"))
+
+```
+
+```{r}
+library(zoo)
+
+rolling_dataset<- german_election_polls %>%
+      select(polling_firm, end_date,week,union, grune, spd, af_d, linke, fdp) %>%
+      arrange(desc(-week))%>%
+      dplyr::mutate(rolling_spd = zoo::rollmean(spd, k = 14, fill = NA)) %>%
+      dplyr::mutate(rolling_union = zoo::rollmean(union, k = 14, fill = NA)) %>%
+      dplyr::mutate(rolling_grune = zoo::rollmean(grune, k = 14, fill = NA)) %>%
+      dplyr::mutate(rolling_af_d = zoo::rollmean(af_d, k = 14, fill = NA)) %>%
+      dplyr::mutate(rolling_linke = zoo::rollmean(linke, k = 14, fill = NA)) %>%
+      dplyr::mutate(rolling_fdp = zoo::rollmean(fdp, k = 14, fill = NA))  
+  
+rolling_dataset %>%
+  ggplot(aes(x=end_date, y=rolling_spd))+
+      geom_line(color = "red")+
+      geom_point(data = german_election_polls, aes(x=end_date, y=spd,color = "red"))+
+      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_union))+
+      geom_point(data = german_election_polls, aes(x=end_date, y=union))+
+      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_grune, color = "green"))+
+      geom_point(data = german_election_polls, aes(x=end_date, y=grune, color= "green"))+
+      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_af_d, color = "blue"))+
+      geom_point(data = german_election_polls, aes(x=end_date, y=af_d, color ="blue"))+
+      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_linke, color = "purple"))+
+      geom_point(data = german_election_polls, aes(x=end_date, y=linke, color ="purple"))+
+      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_fdp, color = "yellow"))+
+      geom_point(data = german_election_polls, aes(x=end_date, y=fdp, color ="yellow"))+
+      labs(title = "German election poll tracker: who will be the next chancellor?",
+        subtitle = "Find out who is leading the polling to succeed Angela Merkel as chancellor of Germany",
+         x = "Date", 
+         y = "Rolling average percentage",
+         caption = "Source: wahirecht.de")
+```
+
+
+
+# Challenge 3: Excess rentals in TfL bike sharing
+
+Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following
+
+```{r, get_tfl_data, cache=TRUE}
+url <- "https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx"
+library(disk.frame)
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp <- tempfile(fileext = ".xlsx")))
+
+# Use read_excel to read it as dataframe
+bike0 <- read_excel(bike.temp,
+                   sheet = "Data",
+                   range = cell_cols("A:B"))
+
+# change dates to get year, month, and week
+bike <- bike0 %>% 
+  clean_names() %>% 
+  rename (bikes_hired = number_of_bicycle_hires) %>% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))
+```
+
+We can easily create a facet grid that plots bikes hired by month and year.
+
+```{r tfl_month_year_grid, out.width="100%"}
+knitr::include_graphics(here::here("images", "tfl_distributions_monthly.png"), error = FALSE)
+```
+
+Look at May and Jun and compare 2020 with the previous years. What's happening?
+
+> It becomes clear that the effect of national restrictive measures such as lockdowns have greatly influenced the bikes rent. This helps us explain the difference between the average number of rented bikes in May and June 2020 with previous years.
+
+```{r}
+actual_bike <- bike %>%
+               filter (year >= 2016) %>%
+               group_by(year,month) %>%
+               summarise(actual = mean(bikes_hired))
+
+expected_bike <- actual_bike %>%
+                 group_by(month) %>%
+                 summarise(expected = mean(actual))
+
+comparison_bike <- left_join(actual_bike, expected_bike, by = "month")
+
+comparison_bike
+```
+
+
+```{r, tfl_absolute_monthly_change, out.width="100%"}
+comparison_bike %>%
+  ggplot(aes(x = month, group = 1)) +
+  geom_line(aes(x = month, y = actual), color = "black", size = 0.1) +
+  geom_line(aes(x = month, y = expected), color = "blue", size = 0.8) +
+  geom_ribbon(aes(ymin = expected, ymax = pmin(expected, actual)),fill = "red", alpha=0.2)  +
+  geom_ribbon(aes(ymin = actual, ymax = pmin(expected, actual)),fill = "green", alpha=0.2)+
+  facet_wrap(~ year) +
+  theme_bw()+
+  labs(
+    title= "Montly changes in Tfl bikes rentals",
+    y="bike rentals",
+    x="Months"
+  )
+```
+
+```{r}
+actual_bike_w <- bike %>%
+               filter (year >= 2016) %>%
+               group_by(year, week) %>%
+               summarise(actual = mean(bikes_hired))
+
+expected_bike_w <- actual_bike_w %>%
+                 group_by(week) %>%
+                 summarise(expected = mean(actual))
+
+comparison_bike_w <- left_join(actual_bike_w, expected_bike_w, by = "week") %>%
+                     group_by(week) %>%
+                     mutate(dchanges = (actual - expected) / expected )
+
+comparison_bike_w = comparison_bike_w %>%
+  filter(!(year ==2021 & week ==53))
+
+```
+```{r tfl_absolute_monthly_changemj, out.width="100%"}
+comparison_bike_w %>%
+  ggplot(aes(x = week, group = 1)) +
+  geom_line(aes(x = week, y = dchanges, fill = "black")) +
+  geom_ribbon(aes(ymin = 0, ymax = pmin(0, dchanges)),fill = "red", alpha=0.2)  +
+  geom_ribbon(aes(ymin = dchanges, ymax = pmin(0, dchanges)),fill = "green", alpha=0.2)+
+  facet_wrap(~ year) +
+  theme_bw()+
+  labs(
+    title= "Weekly changes in Tfl bikes rentals",
+    y= "Bikes rentals",
+    x="Weeks"
+  )
+```
+
+Should you use the mean or the median to calculate your expected rentals? Why?
+> In order to calculate the expected rentals we used the mean of rented bikes/montly since we thought this was a better measurement. Since the monthly data of the actual rented bikes does not seem to be heavily right/left skewed, the mean is a good tool to calcukate the expected rentals. If the data were heavily skewed, we would have changed to the median.
+
+
+
+# Challenge 4: Brexit plot
+
+Using your data manipulation and visualisation skills, please use the Brexit results dataframe (the same dataset you used in the pre-programme assignement) and produce the following plot. Use the correct colour for each party; google "UK Political Party Web Colours" and find the appropriate hex code for colours, not the default colours that R gives you.
+
+
+```{r brexit_challenge, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "brexit.png"), error = FALSE)
+```
+
+```{r}
+# load data
+brexit_data = read_csv(here::here("data", "brexit_results.csv"))
+
+
+# transform data into long format, grouping all parties under the same column
+brexit_data_long = brexit_data %>%
+  select(1:11) %>% 
+      pivot_longer(cols=2:5,
+      names_to="party",
+      values_to = "share")
+brexit_data_long
+
+# replication of brexit plot
+brexit_data_long %>%
+  ggplot(aes(x = share, y = leave_share, color = party)) +
+  geom_point(size = 1, alpha = 0.2) +
+  geom_smooth(method = "lm")+
+  scale_color_manual(limits = c("con_2015", "lab_2015", "ld_2015","ukip_2015"),
+                     labels = c("Conservative", "Labor", "Liberal Democrat","UKIP"),
+                     values = c(con_2015 = "#0087dc",
+                                lab_2015 = "#d50000",
+                                ld_2015 = "#FDBB30", 
+                                ukip_2015 ="#EFE600")) +
+  theme_bw()+
+  labs(title = "How political affiliation translated to Brexit voting",
+         subtitle = "",
+         x = "Party % in the UK 2015 general election", 
+         y = "Leave % in the UK 2016 Brexit referendum",
+         caption = "")+
+  theme(legend.position = "bottom", 
+        legend.title=element_blank(), 
+        text = element_text(size=8))+
+
+  NULL
+```
+
+
+# Challenge 5:GDP components over time and among countries
+
+At the risk of oversimplifying things, the main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). You can read more about GDP and the different approaches in calculating at the [Wikipedia GDP page](https://en.wikipedia.org/wiki/Gross_domestic_product).
+
+The GDP data we will look at is from the [United Nations' National Accounts Main Aggregates Database](https://unstats.un.org/unsd/snaama/Downloads), which contains estimates of total GDP and its components for all countries from 1970 to today. We will look at how GDP and its components have changed over time, and compare different countries and how much each component contributes to that country's GDP. The file we will work with is [GDP and its breakdown at constant 2010 prices in US Dollars](http://unstats.un.org/unsd/amaapi/api/file/6) and it has already been saved in the Data directory. Have a look at the Excel file to see how it is structured and organised
+
+
+```{r read_GDP_data}
+
+UN_GDP_data  <-  read_excel(here::here("data", "Download-GDPconstant-USD-countries.xls"), # Excel filename
+                sheet="Download-GDPconstant-USD-countr", # Sheet name
+                skip=2) # Number of rows to skip
+glimpse(UN_GDP_data)
+```
+
+The first thing you need to do is to tidy the data, as it is in wide format and you must make it into long, tidy format. Please express all figures in billions (divide values by `1e9`, or $10^9$), and you want to rename the indicators into something shorter.
+
+
+```{r reshape_GDP_data}
+
+# cleaning data. Making long grouping years into the same column
+tidy_GDP_data = UN_GDP_data %>%
+  select(1:51) %>% 
+      pivot_longer(cols=4:51,
+      names_to="year",
+      values_to = "value")
+
+# changing value to Billions of USD
+tidy_GDP_data = tidy_GDP_data%>%
+  mutate(value = value / 1000000000)
+
+glimpse(tidy_GDP_data)
+
+
+# Let us compare GDP components for these 3 countries
+country_list <- c("United States","India", "Germany")
+```
+
+First, can you produce this plot?
+
+
+```{r gdp1, out.width="100%"}
+knitr::include_graphics(here::here("images", "gdp1.png"), error = FALSE)
+```
+
+```{r}
+# List of indicators of interest to replicate the graph. These are stored under the Indicator name column
+indicator_list = c("Gross capital formation", 
+                   "Exports of goods and services", 
+                   "General government final consumption expenditure", 
+                   "Household consumption expenditure (including Non-profit institutions serving households)", 
+                   "Imports of goods and services")
+
+tidy_GDP_data %>%
+  # filter by country and indicator name using both lists
+  filter(Country %in% country_list)%>%
+  filter(IndicatorName %in% indicator_list)%>%
+  # grouping by indicator
+  group_by(IndicatorName)%>%
+  # plotting
+  ggplot(aes(x=year, y = value, color=IndicatorName, group=IndicatorName))+
+  geom_line(aes(x=year, y = value, color=IndicatorName))+
+  facet_wrap(~ Country)+
+  theme_bw()+
+  theme(legend.position="bottom", 
+        legend.direction="vertical")+
+  scale_x_discrete(breaks=seq(1970, 2017, 10))+
+  labs(title = "GDP Components over time",
+         subtitle = "In constant 2010 USD",
+         x = "", 
+         y = "Billion US$")+
+  scale_shape_discrete(
+    limits = c(
+      "Gross capital formation", 
+      "Exports of goods and services", 
+      "General government final consumption expenditure", 
+      "Household consumption expenditure (including Non-profit institutions serving households)", 
+      "Imports of goods and services"),
+    labels = c(
+      "Gross capital formation", 
+      "Exports", 
+      "Government expenditure",
+      "Household expenditure", 
+      "Imports")) +
+  NULL
+```
+
+
+Secondly, recall that GDP is the sum of Household Expenditure (Consumption *C*), Gross Capital Formation (business investment *I*), Government Expenditure (G) and Net Exports (exports - imports). Even though there is an indicator `Gross Domestic Product (GDP)` in your dataframe, I would like you to calculate it given its components discussed above.
+
+```{r}
+# changing tidy_data to wide. Degrouping Indicator names to allow for easier calculations between these. 
+UN_GDP_estimation = tidy_GDP_data%>%
+  select(1:5)%>%
+  pivot_wider(
+    names_from = IndicatorName, 
+    values_from = value
+  )
+
+# Creation of new column, expected_GDP, which is the result of the euquation provided above. 
+UN_GDP_estimation = UN_GDP_estimation %>%
+  mutate(expected_GDP = 
+           UN_GDP_estimation$`Household consumption expenditure (including Non-profit institutions serving households)`+
+           UN_GDP_estimation$`Gross capital formation`+
+           UN_GDP_estimation$`General government final consumption expenditure`+
+           UN_GDP_estimation$`Exports of goods and services`-
+           UN_GDP_estimation$`Imports of goods and services`)
+
+# Creation of new column, percentage deviation, which is the percentage deviation between the expected_GDP column, and the GDP column reported
+UN_GDP_estimation = UN_GDP_estimation %>%
+  mutate(percentage_deviation = ((expected_GDP/UN_GDP_estimation$`Gross Domestic Product (GDP)`)-1)*100)
+
+# Plot
+UN_GDP_estimation %>%
+  filter(Country %in% country_list)%>%
+  ggplot(aes(x=year, y=percentage_deviation))+
+  geom_line(group=1, size = 0.8)+
+  geom_line(group=1, y=0, size = 0.8)+
+  facet_wrap(~ Country)+
+  theme_bw()+
+  theme(legend.position="none")+
+  scale_x_discrete(breaks=seq(1970, 2017, 10))+
+  geom_ribbon(aes(ymin = 0, ymax = pmin(0, percentage_deviation), group=1),fill = "red", alpha=0.2) +
+  geom_ribbon(aes(ymin = percentage_deviation, ymax = pmin(0, percentage_deviation), group=1),fill = "green", alpha=0.2)+
+  labs(title = "Deviation of Sum of GDP Components vs Reported GDP",
+         subtitle = "Percentage Deviation",
+         x = "Year", 
+         y = "Percentage Deviation", 
+         caption = "Green: Higher Calculated GDP than reported GDP \
+         Red: Lower Calculated GDP than reported GDP")+
+  NULL
+
+# This code can be used to see the percentage deviation by country and year. It is commented out so it doesn't appear on the knitted file. 
+#UN_GDP_estimation%>%
+#  filter(Country %in% country_list)%>%
+#  select("Country", "year", "percentage_deviation")
+```
+
+
+> What is the % difference between what you calculated as GDP and the GDP figure included in the dataframe?
+
+For both Germany and the US, the calculated GDP was higher than the reported GDP from the 1970's to the 2000. This difference was highest in the 70's, of around a 4%, and has steadily decreased over time. Since the 2000's, both countries report a GDP that is consistent with the sum of its components, thus having an almost 0% deviation. 
+
+India on the other hand still has fluctuations on the percentage difference between the reported and calculated GDP. From 1970 until 1990, it reported a lower GDP than its calculated, peaking at a difference of 7.41% in 1979. However, from 1990 until this day, India reports a higher GDP than the sum of its components, except two exceptions in 2007 and 2010. In 2017, the last datapoint available, India's reported GDP was 2% higher than its calculated.
+
+```{r gdp2, echo=FALSE, out.width="100%"}
+knitr::include_graphics(here::here("images", "gdp2.png"), error = FALSE)
+```
+
+
+
+> What is this last chart telling you? Can you explain in a couple of paragraphs the different dynamic among these three countries?
+
+In Germany, during the past years, the proportion of their GDP attributed to net exports has increased, while the proportions of all other elements of GDP have decreased. This might be a result of Germany's strong exports in industries such as automobile, driving the economy of the country. The US has seen a steady increase in the proportion of household spending, reducing government expenditure. Lastly, India has seen a sharp increase in the proportion of gross capital formation, with a decrease in household expenditure. This might suggest an entrepreneurial trend among Indians, who prefer to invest capital than to spend it. 
+
+Furthermore, household income is the largest contributor of GDP in all countries, while net exports is the lower. Government expenditure and gross capital formation represent a similar proportion in the US and Germany, while in India gross capital formation appears in a larger proportion. 
+
+
+

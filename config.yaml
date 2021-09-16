@@ -86,7 +86,7 @@ params:
       - image: Photo-pro-compressed.jpg
         subtitle: Biography
         title: About me
-        url: blogs/me
+        url: blogs/about_me
       - image: wp6611193.jpg
         subtitle: Download my CV
         title: CV
@@ -110,7 +110,7 @@ params:
       - image: Data_301985997-775x500.gif
         subtitle: Applied Statistics with R
         title: Data Analytics Potpourri
-        url: blogs/hmw
+        url: blogs/test
       - image: pexels-sora-shimazaki-5935788.jpg
         subtitle: Partial Differential Equation Modelling
         title: Malware Propagation

@@ -7,7 +7,7 @@ description: ""
 draft: false
 image: Photo-pro-compressed.jpg
 keywords: ""
-slug: me
+slug: about_me
 title: About Me
 ---
 
@@ -25,11 +25,14 @@ title: About Me
 
 
 
+```{r picture, echo=FALSE, out.width="70%"}
+knitr::include_graphics("/img/blogs/Photo-pro-compressed.jpg", error = FALSE)
+```
+
+
 THis is the R part
 
-```{r}
-knitr::include_graphics("Photo-pro-compressed.jpg")
-```
+
 
 R part over
 
