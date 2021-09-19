@@ -14,19 +14,21 @@ title: About Me
 
 
 
-```{r picture, echo=FALSE, out.width="70%"}
+```{r picture, echo=FALSE, out.width="60%", fig.align="center"}
 knitr::include_graphics("/img/blogs/Photo-pro-compressed.jpg", error = FALSE)
 ```
 
-### Name: Jeffrey KAIKATI
-### National of: Lebanon
-### Resident of: France and The United Kingdom
+### Name: *Jeffrey KAIKATI*
+### National of: *Lebanon*
+### Resident of: *France and The United Kingdom*
 ### Description: 
 
-##### I am a well-rounded and rigorous engineer with a strong passion for entrepreneurship, business management and financial services.
+##### *I am a well-rounded and rigorous engineer with a strong passion for entrepreneurship, business management and financial services.*
 
-### Education Background: 
+### Background and Aspirations: 
 
-##### In 2017, I left my home country to face the challenge of two intensive years in the French preparatory school Lycée Sainte Geneviève. Beyond enabling me to build robust foundations in Mathematics, this extremely demanding programme taught me the importance of self-discipline and resilience in academic and professional success.
-##### I now hold a Masters in Engineering from CentraleSupélec Engineering School (Graduate School of Université Paris-Saclay) and am currently reading for the Masters in Analytics and Management at London Business School. 
+##### *In 2017, I left my home country to face the challenge of two intensive years in the French preparatory school Lycée Sainte Geneviève. Beyond enabling me to build robust foundations in Mathematics, this extremely demanding programme taught me the importance of self-discipline and resilience in academic and professional success.*
+##### *I now hold a Masters in Engineering from CentraleSupélec Engineering School (Graduate School of Université Paris-Saclay) and am currently reading for the Masters in Analytics and Management at London Business School.*
+##### *I plan to start my career in Strategy Consulting in Europe.*
+
 

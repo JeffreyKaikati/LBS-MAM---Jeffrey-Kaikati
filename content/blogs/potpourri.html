@@ -3,31 +3,17 @@ categories:
 - ""
 - ""
 date: "2017-10-31T21:28:43-05:00"
-description: ""
+description:
 draft: false
 image: pic10.jpg
 keywords: ""
 slug: test
-title: test
+title: Data Analytics & Visualisation
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<p>title: ‘Data Visualization Challenges’
-author: “Awashti Palak, Kaikati Jeffrey, Laffitte Jose, Opre Valeria, Wang Hanyu, Zhang Jasmine”
-date: “2021-09-16”
-output:
-html_document:
-theme: flatly
-highlight: zenburn
-number_sections: yes
-toc: yes
-toc_float: yes
-code_folding: show
-pdf_document:
-toc: yes
-—</p>
 <div id="challenge-1-replicating-a-chart" class="section level1">
 <h1>Challenge 1: Replicating a chart</h1>
 <p>The purpose of this challenge is to reproduce a plot using <code>dplyr</code> and <code>ggplot2</code> skills.</p>
@@ -70,8 +56,9 @@ population_vaccinations &lt;- left_join(population, vaccinations, by=&quot;fips&
 
 
 pve &lt;- left_join(population_vaccinations, election2020_results, by=&quot;fips&quot;)
-# we will group pve by county</code></pre>
-<pre class="r"><code>pve %&gt;%
+# we will group pve by county
+
+pve %&gt;%
   filter(date ==&quot;08/03/2021&quot;) %&gt;%
   filter(candidate == &quot;DONALD J TRUMP&quot;) %&gt;%
   filter(series_complete_pop_pct &gt; 1) %&gt;%
@@ -87,129 +74,11 @@ pve &lt;- left_join(population_vaccinations, election2020_results, by=&quot;fips
          x = &quot;2020 Trump Vote %&quot;, 
          y = &quot;Percentage of Total Population Vaccinated&quot;,
          caption = &quot;Centers for Disease Control, COVID Act NOW, state health depts&quot;)</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>pve</code></pre>
-<pre><code>## # A tibble: 6,091,904 × 39
-##    fips  pop_estimate_2019 date       mmwr_week recip_county   recip_state
-##    &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;      
-##  1 00000         328239523 &lt;NA&gt;              NA &lt;NA&gt;           &lt;NA&gt;       
-##  2 01000           4903185 &lt;NA&gt;              NA &lt;NA&gt;           &lt;NA&gt;       
-##  3 01001             55869 09/15/2021        37 Autauga County AL         
-##  4 01001             55869 09/15/2021        37 Autauga County AL         
-##  5 01001             55869 09/15/2021        37 Autauga County AL         
-##  6 01001             55869 09/14/2021        37 Autauga County AL         
-##  7 01001             55869 09/14/2021        37 Autauga County AL         
-##  8 01001             55869 09/14/2021        37 Autauga County AL         
-##  9 01001             55869 09/13/2021        37 Autauga County AL         
-## 10 01001             55869 09/13/2021        37 Autauga County AL         
-## # … with 6,091,894 more rows, and 33 more variables:
-## #   series_complete_pop_pct &lt;dbl&gt;, series_complete_yes &lt;dbl&gt;,
-## #   series_complete_12plus &lt;dbl&gt;, series_complete_12plus_pop_pct &lt;dbl&gt;,
-## #   series_complete_18plus &lt;dbl&gt;, series_complete_18plus_pop_pct &lt;dbl&gt;,
-## #   series_complete_65plus &lt;dbl&gt;, series_complete_65plus_pop_pct &lt;dbl&gt;,
-## #   completeness_pct &lt;dbl&gt;, administered_dose1_recip &lt;dbl&gt;,
-## #   administered_dose1_pop_pct &lt;dbl&gt;, administered_dose1_recip_12plus &lt;dbl&gt;, …</code></pre>
+<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
 </div>
-<div id="challenge-2-opinion-polls-for-the-2021-german-elections" class="section level1">
-<h1>Challenge 2: Opinion polls for the 2021 German elections</h1>
-<p>The Guardian newspaper has an <a href="https://www.theguardian.com/world/2021/aug/20/german-election-poll-tracker-who-will-be-the-next-chancellor">election poll tracker for the upcoming German election</a>.
-The list of the opinion polls since Jan 2021 can be found at <a href="https://en.wikipedia.org/wiki/Opinion_polling_for_the_2021_German_federal_election">Wikipedia</a> and the task is to reproduce the graph similar to the one produced by the Guardian.</p>
-<p>The following code will scrape the wikipedia page and import the table in a dataframe.</p>
-<pre class="r"><code>url &lt;- &quot;https://en.wikipedia.org/wiki/Opinion_polling_for_the_2021_German_federal_election&quot;
-# https://www.economist.com/graphic-detail/who-will-succeed-angela-merkel
-# https://www.theguardian.com/world/2021/jun/21/german-election-poll-tracker-who-will-be-the-next-chancellor
-
-
-# get tables that exist on wikipedia page 
-tables &lt;- url %&gt;% 
-  read_html() %&gt;% 
-  html_nodes(css=&quot;table&quot;)
-
-
-# parse HTML tables into a dataframe called polls 
-# Use purr::map() to create a list of all tables in URL
-polls &lt;- map(tables, . %&gt;% 
-             html_table(fill=TRUE)%&gt;% 
-             janitor::clean_names())
-
-
-# list of opinion polls
-german_election_polls &lt;- polls[[1]] %&gt;% # the first table on the page contains the list of all opinions polls
-  slice(2:(n()-1)) %&gt;%  # drop the first row, as it contains again the variable names and last row that contains 2017 results
-  mutate(
-         # polls are shown to run from-to, e.g. 9-13 Aug 2021. We keep the last date, 13 Aug here, as the poll date
-         # and we extract it by picking the last 11 characters from that field
-         end_date = str_sub(fieldwork_date, -11),
-         
-         # end_date is still a string, so we convert it into a date object using lubridate::dmy()
-         end_date = dmy(end_date),
-         
-         # we also get the month and week number from the date, if we want to do analysis by month- week, etc.
-         month = month(end_date),
-         week = isoweek(end_date)
-         )</code></pre>
-<pre class="r"><code>german_election_polls %&gt;%
-  select(end_date,union, grune, spd, af_d, linke, fdp)%&gt;%
-  ggplot(aes(x=end_date, y= union))+
-  geom_point()+
-  geom_point(data=german_election_polls, aes(x=end_date, y= grune, color= &quot;Green&quot;)) +
-  geom_point(data=german_election_polls, aes(x=end_date, y= spd, color= &quot;Red&quot;)) +
-  geom_point(data=german_election_polls, aes(x=end_date, y= af_d, color= &quot;Blue&quot;)) +
-  geom_point(data=german_election_polls, aes(x=end_date, y= linke, color= &quot;Purple&quot;)) +
-  geom_point(data=german_election_polls, aes(x=end_date, y= fdp, color= &quot;Yellow&quot;))</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>german_election_polls %&gt;%
-  select(polling_firm, end_date,union, grune, spd, af_d, linke, fdp) %&gt;%
-  ggplot(aes(x=end_date, y=grune))+
-  geom_point(color = &quot;green&quot;)+
-  geom_point(data = german_election_polls, aes(x=end_date, y=spd,color = &quot;red&quot;))+
-  geom_point(data = german_election_polls, aes(x=end_date, y=af_d,color = &quot;blue&quot;))+
-  geom_point(data = german_election_polls, aes(x=end_date, y=linke,color = &quot;purple&quot;))+
-  geom_point(data = german_election_polls, aes(x=end_date, y=fdp,color = &quot;yellow&quot;))+
-  geom_point(data = german_election_polls, aes(x=end_date, y=union))+
-  geom_smooth(data = german_election_polls, aes(x=end_date, y=grune,color = &quot;green&quot;, method=&quot;lm&quot;))+
-  geom_smooth(data = german_election_polls, aes(x=end_date, y=spd,color = &quot;red&quot;, method=&quot;lm&quot;))+
-  geom_smooth(data = german_election_polls, aes(x=end_date, y=af_d,color = &quot;blue&quot;, method=&quot;lm&quot;))+
-  geom_smooth(data = german_election_polls, aes(x=end_date, y=linke,color = &quot;purple&quot;, method=&quot;lm&quot;))+
-  geom_smooth(data = german_election_polls, aes(x=end_date, y=fdp,color = &quot;yellow&quot;, method=&quot;lm&quot;))+
-  geom_smooth(data = german_election_polls, aes(x=end_date, y=union, method=&quot;lm&quot;))</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-5-2.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>library(zoo)
-
-rolling_dataset&lt;- german_election_polls %&gt;%
-      select(polling_firm, end_date,week,union, grune, spd, af_d, linke, fdp) %&gt;%
-      arrange(desc(-week))%&gt;%
-      dplyr::mutate(rolling_spd = zoo::rollmean(spd, k = 14, fill = NA)) %&gt;%
-      dplyr::mutate(rolling_union = zoo::rollmean(union, k = 14, fill = NA)) %&gt;%
-      dplyr::mutate(rolling_grune = zoo::rollmean(grune, k = 14, fill = NA)) %&gt;%
-      dplyr::mutate(rolling_af_d = zoo::rollmean(af_d, k = 14, fill = NA)) %&gt;%
-      dplyr::mutate(rolling_linke = zoo::rollmean(linke, k = 14, fill = NA)) %&gt;%
-      dplyr::mutate(rolling_fdp = zoo::rollmean(fdp, k = 14, fill = NA))  
-  
-rolling_dataset %&gt;%
-  ggplot(aes(x=end_date, y=rolling_spd))+
-      geom_line(color = &quot;red&quot;)+
-      geom_point(data = german_election_polls, aes(x=end_date, y=spd,color = &quot;red&quot;))+
-      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_union))+
-      geom_point(data = german_election_polls, aes(x=end_date, y=union))+
-      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_grune, color = &quot;green&quot;))+
-      geom_point(data = german_election_polls, aes(x=end_date, y=grune, color= &quot;green&quot;))+
-      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_af_d, color = &quot;blue&quot;))+
-      geom_point(data = german_election_polls, aes(x=end_date, y=af_d, color =&quot;blue&quot;))+
-      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_linke, color = &quot;purple&quot;))+
-      geom_point(data = german_election_polls, aes(x=end_date, y=linke, color =&quot;purple&quot;))+
-      geom_line(data = rolling_dataset, aes(x=end_date, y=rolling_fdp, color = &quot;yellow&quot;))+
-      geom_point(data = german_election_polls, aes(x=end_date, y=fdp, color =&quot;yellow&quot;))+
-      labs(title = &quot;German election poll tracker: who will be the next chancellor?&quot;,
-        subtitle = &quot;Find out who is leading the polling to succeed Angela Merkel as chancellor of Germany&quot;,
-         x = &quot;Date&quot;, 
-         y = &quot;Rolling average percentage&quot;,
-         caption = &quot;Source: wahirecht.de&quot;)</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-6-1.png" width="648" style="display: block; margin: auto;" /></p>
-</div>
-<div id="challenge-3-excess-rentals-in-tfl-bike-sharing" class="section level1">
-<h1>Challenge 3: Excess rentals in TfL bike sharing</h1>
-<p>Recall the TfL data on how many bikes were hired every single day. We can get the latest data by running the following</p>
+<div id="challenge-2-excess-rentals-in-tfl-bike-sharing" class="section level1">
+<h1>Challenge 2: Excess rentals in TfL bike sharing</h1>
+<p>We will be working on the TfL (Transports for London) data, and specifically on how many bikes were hired every single day. We can get the latest data by running the following</p>
 <pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
 library(disk.frame)
 # Download TFL data to temporary file
@@ -233,8 +102,8 @@ bike &lt;- bike0 %&gt;%
           month = lubridate::month(day, label = TRUE),
           week = isoweek(day))</code></pre>
 <p>We can easily create a facet grid that plots bikes hired by month and year.</p>
-<pre class="r"><code>knitr::include_graphics(here::here(&quot;images&quot;, &quot;tfl_distributions_monthly.png&quot;), error = FALSE)</code></pre>
-<p><img src="/Users/jeffreykaikati/Documents/London Business School/Applied Statistics with R/Git Repo/LBS-MAM---Jeffrey-Kaikati/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>knitr::include_graphics(&quot;/img/blogs/tfl_distributions_monthly.png&quot;, error = FALSE)</code></pre>
+<p><img src="/img/blogs/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Look at May and Jun and compare 2020 with the previous years. What’s happening?</p>
 <blockquote>
 <p>It becomes clear that the effect of national restrictive measures such as lockdowns have greatly influenced the bikes rent. This helps us explain the difference between the average number of rented bikes in May and June 2020 with previous years.</p>
@@ -311,10 +180,10 @@ comparison_bike_w = comparison_bike_w %&gt;%
 <p>Should you use the mean or the median to calculate your expected rentals? Why?
 &gt; In order to calculate the expected rentals we used the mean of rented bikes/montly since we thought this was a better measurement. Since the monthly data of the actual rented bikes does not seem to be heavily right/left skewed, the mean is a good tool to calcukate the expected rentals. If the data were heavily skewed, we would have changed to the median.</p>
 </div>
-<div id="challenge-4-brexit-plot" class="section level1">
-<h1>Challenge 4: Brexit plot</h1>
+<div id="challenge-3-brexit-plot" class="section level1">
+<h1>Challenge 3: Brexit plot</h1>
 <p>Using your data manipulation and visualisation skills, please use the Brexit results dataframe (the same dataset you used in the pre-programme assignement) and produce the following plot. Use the correct colour for each party; google “UK Political Party Web Colours” and find the appropriate hex code for colours, not the default colours that R gives you.</p>
-<p><img src="/Users/jeffreykaikati/Documents/London Business School/Applied Statistics with R/Git Repo/LBS-MAM---Jeffrey-Kaikati/images/brexit.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="/img/blogs/brexit.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># load data
 brexit_data = read_csv(here::here(&quot;data&quot;, &quot;brexit_results.csv&quot;))
 
@@ -362,69 +231,15 @@ brexit_data_long %&gt;%
         text = element_text(size=8))+
 
   NULL</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-9-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-6-1.png" width="648" style="display: block; margin: auto;" /></p>
 </div>
-<div id="challenge-5gdp-components-over-time-and-among-countries" class="section level1">
-<h1>Challenge 5:GDP components over time and among countries</h1>
+<div id="challenge-4gdp-components-over-time-and-among-countries" class="section level1">
+<h1>Challenge 4:GDP components over time and among countries</h1>
 <p>At the risk of oversimplifying things, the main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). You can read more about GDP and the different approaches in calculating at the <a href="https://en.wikipedia.org/wiki/Gross_domestic_product">Wikipedia GDP page</a>.</p>
 <p>The GDP data we will look at is from the <a href="https://unstats.un.org/unsd/snaama/Downloads">United Nations’ National Accounts Main Aggregates Database</a>, which contains estimates of total GDP and its components for all countries from 1970 to today. We will look at how GDP and its components have changed over time, and compare different countries and how much each component contributes to that country’s GDP. The file we will work with is <a href="http://unstats.un.org/unsd/amaapi/api/file/6">GDP and its breakdown at constant 2010 prices in US Dollars</a> and it has already been saved in the Data directory. Have a look at the Excel file to see how it is structured and organised</p>
 <pre class="r"><code>UN_GDP_data  &lt;-  read_excel(here::here(&quot;data&quot;, &quot;Download-GDPconstant-USD-countries.xls&quot;), # Excel filename
                 sheet=&quot;Download-GDPconstant-USD-countr&quot;, # Sheet name
-                skip=2) # Number of rows to skip
-glimpse(UN_GDP_data)</code></pre>
-<pre><code>## Rows: 3,685
-## Columns: 51
-## $ CountryID     &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 8, 8,…
-## $ Country       &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanista…
-## $ IndicatorName &lt;chr&gt; &quot;Final consumption expenditure&quot;, &quot;Household consumption …
-## $ `1970`        &lt;dbl&gt; 5.56e+09, 5.07e+09, 3.72e+08, 9.85e+08, 9.85e+08, 1.12e+…
-## $ `1971`        &lt;dbl&gt; 5.33e+09, 4.84e+09, 3.82e+08, 1.05e+09, 1.05e+09, 1.45e+…
-## $ `1972`        &lt;dbl&gt; 5.20e+09, 4.70e+09, 4.02e+08, 9.19e+08, 9.19e+08, 1.73e+…
-## $ `1973`        &lt;dbl&gt; 5.75e+09, 5.21e+09, 4.21e+08, 9.19e+08, 9.19e+08, 2.18e+…
-## $ `1974`        &lt;dbl&gt; 6.15e+09, 5.59e+09, 4.31e+08, 1.18e+09, 1.18e+09, 3.00e+…
-## $ `1975`        &lt;dbl&gt; 6.32e+09, 5.65e+09, 5.98e+08, 1.37e+09, 1.37e+09, 3.16e+…
-## $ `1976`        &lt;dbl&gt; 6.37e+09, 5.68e+09, 6.27e+08, 2.03e+09, 2.03e+09, 4.17e+…
-## $ `1977`        &lt;dbl&gt; 6.90e+09, 6.15e+09, 6.76e+08, 1.92e+09, 1.92e+09, 4.31e+…
-## $ `1978`        &lt;dbl&gt; 7.09e+09, 6.30e+09, 7.25e+08, 2.22e+09, 2.22e+09, 4.57e+…
-## $ `1979`        &lt;dbl&gt; 6.92e+09, 6.15e+09, 7.08e+08, 2.07e+09, 2.07e+09, 4.89e+…
-## $ `1980`        &lt;dbl&gt; 6.69e+09, 5.95e+09, 6.85e+08, 1.98e+09, 1.98e+09, 4.53e+…
-## $ `1981`        &lt;dbl&gt; 6.81e+09, 6.06e+09, 6.97e+08, 2.06e+09, 2.06e+09, 4.60e+…
-## $ `1982`        &lt;dbl&gt; 6.96e+09, 6.19e+09, 7.12e+08, 2.08e+09, 2.08e+09, 4.77e+…
-## $ `1983`        &lt;dbl&gt; 7.30e+09, 6.49e+09, 7.47e+08, 2.19e+09, 2.19e+09, 4.96e+…
-## $ `1984`        &lt;dbl&gt; 7.43e+09, 6.61e+09, 7.60e+08, 2.23e+09, 2.23e+09, 5.06e+…
-## $ `1985`        &lt;dbl&gt; 7.45e+09, 6.63e+09, 7.63e+08, 2.23e+09, 2.23e+09, 5.08e+…
-## $ `1986`        &lt;dbl&gt; 7.68e+09, 6.83e+09, 7.85e+08, 2.30e+09, 2.30e+09, 5.23e+…
-## $ `1987`        &lt;dbl&gt; 6.89e+09, 6.12e+09, 7.05e+08, 2.07e+09, 2.07e+09, 4.69e+…
-## $ `1988`        &lt;dbl&gt; 6.32e+09, 5.62e+09, 6.46e+08, 1.90e+09, 1.90e+09, 4.31e+…
-## $ `1989`        &lt;dbl&gt; 5.87e+09, 5.22e+09, 6.01e+08, 1.76e+09, 1.76e+09, 4.00e+…
-## $ `1990`        &lt;dbl&gt; 5.69e+09, 5.06e+09, 5.82e+08, 1.71e+09, 1.71e+09, 3.88e+…
-## $ `1991`        &lt;dbl&gt; 5.28e+09, 4.70e+09, 5.40e+08, 1.51e+09, 1.51e+09, 4.15e+…
-## $ `1992`        &lt;dbl&gt; 5.59e+09, 4.97e+09, 5.72e+08, 1.52e+09, 1.52e+09, 4.92e+…
-## $ `1993`        &lt;dbl&gt; 4.36e+09, 3.87e+09, 4.46e+08, 1.13e+09, 1.13e+09, 4.22e+…
-## $ `1994`        &lt;dbl&gt; 3.52e+09, 3.13e+09, 3.59e+08, 8.70e+08, 8.70e+08, 3.69e+…
-## $ `1995`        &lt;dbl&gt; 5.46e+09, 4.86e+09, 5.60e+08, 1.29e+09, 1.29e+09, 6.16e+…
-## $ `1996`        &lt;dbl&gt; 5.36e+09, 4.76e+09, 5.48e+08, 1.21e+09, 1.21e+09, 6.42e+…
-## $ `1997`        &lt;dbl&gt; 5.25e+09, 4.67e+09, 5.36e+08, 1.14e+09, 1.14e+09, 6.64e+…
-## $ `1998`        &lt;dbl&gt; 5.18e+09, 4.60e+09, 5.33e+08, 1.08e+09, 1.08e+09, 6.87e+…
-## $ `1999`        &lt;dbl&gt; 5.09e+09, 4.52e+09, 5.17e+08, 1.02e+09, 1.02e+09, 7.04e+…
-## $ `2000`        &lt;dbl&gt; 4.95e+09, 4.41e+09, 5.04e+08, 9.53e+08, 9.53e+08, 7.13e+…
-## $ `2001`        &lt;dbl&gt; 4.70e+09, 4.17e+09, 4.95e+08, 1.00e+09, 1.00e+09, 6.54e+…
-## $ `2002`        &lt;dbl&gt; 7.18e+09, 6.40e+09, 7.02e+08, 1.37e+09, 1.37e+09, 9.49e+…
-## $ `2003`        &lt;dbl&gt; 8.87e+09, 7.89e+09, 9.06e+08, 1.54e+09, 1.54e+09, 1.41e+…
-## $ `2004`        &lt;dbl&gt; 8.73e+09, 7.66e+09, 1.05e+09, 1.90e+09, 1.90e+09, 1.11e+…
-## $ `2005`        &lt;dbl&gt; 1.01e+10, 9.00e+09, 1.06e+09, 2.06e+09, 2.06e+09, 1.14e+…
-## $ `2006`        &lt;dbl&gt; 1.07e+10, 9.34e+09, 1.40e+09, 2.06e+09, 2.06e+09, 1.09e+…
-## $ `2007`        &lt;dbl&gt; 1.20e+10, 1.04e+10, 1.71e+09, 2.17e+09, 2.17e+09, 1.03e+…
-## $ `2008`        &lt;dbl&gt; 1.23e+10, 1.06e+10, 1.73e+09, 2.14e+09, 2.14e+09, 1.24e+…
-## $ `2009`        &lt;dbl&gt; 1.29e+10, 1.10e+10, 2.15e+09, 3.12e+09, 3.12e+09, 1.53e+…
-## $ `2010`        &lt;dbl&gt; 1.79e+10, 1.57e+10, 2.25e+09, 2.81e+09, 2.81e+09, 1.58e+…
-## $ `2011`        &lt;dbl&gt; 1.97e+10, 1.70e+10, 2.69e+09, 2.61e+09, 2.61e+09, 1.72e+…
-## $ `2012`        &lt;dbl&gt; 2.91e+10, 2.59e+10, 2.81e+09, 2.85e+09, 2.85e+09, 1.31e+…
-## $ `2013`        &lt;dbl&gt; 3.48e+10, 3.14e+10, 2.81e+09, 2.75e+09, 2.75e+09, 8.34e+…
-## $ `2014`        &lt;dbl&gt; 3.35e+10, 3.02e+10, 2.76e+09, 2.13e+09, 2.13e+09, 1.20e+…
-## $ `2015`        &lt;dbl&gt; 3.53e+10, 3.19e+10, 2.81e+09, 2.29e+09, 2.29e+09, 9.10e+…
-## $ `2016`        &lt;dbl&gt; 3.50e+10, 3.16e+10, 2.84e+09, 2.34e+09, 2.34e+09, 7.54e+…
-## $ `2017`        &lt;dbl&gt; 3.51e+10, 3.16e+10, 2.85e+09, 2.24e+09, 2.24e+09, 7.60e+…</code></pre>
+                skip=2) # Number of rows to skip</code></pre>
 <p>The first thing you need to do is to tidy the data, as it is in wide format and you must make it into long, tidy format. Please express all figures in billions (divide values by <code>1e9</code>, or <span class="math inline">\(10^9\)</span>), and you want to rename the indicators into something shorter.</p>
 <pre class="r"><code># cleaning data. Making long grouping years into the same column
 tidy_GDP_data = UN_GDP_data %&gt;%
@@ -437,19 +252,12 @@ tidy_GDP_data = UN_GDP_data %&gt;%
 tidy_GDP_data = tidy_GDP_data%&gt;%
   mutate(value = value / 1000000000)
 
-glimpse(tidy_GDP_data)</code></pre>
-<pre><code>## Rows: 176,880
-## Columns: 5
-## $ CountryID     &lt;dbl&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,…
-## $ Country       &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanista…
-## $ IndicatorName &lt;chr&gt; &quot;Final consumption expenditure&quot;, &quot;Final consumption expe…
-## $ year          &lt;chr&gt; &quot;1970&quot;, &quot;1971&quot;, &quot;1972&quot;, &quot;1973&quot;, &quot;1974&quot;, &quot;1975&quot;, &quot;1976&quot;, …
-## $ value         &lt;dbl&gt; 5.56, 5.33, 5.20, 5.75, 6.15, 6.32, 6.37, 6.90, 7.09, 6.…</code></pre>
-<pre class="r"><code># Let us compare GDP components for these 3 countries
+
+# Let us compare GDP components for these 3 countries
 country_list &lt;- c(&quot;United States&quot;,&quot;India&quot;, &quot;Germany&quot;)</code></pre>
 <p>First, can you produce this plot?</p>
-<pre class="r"><code>knitr::include_graphics(here::here(&quot;images&quot;, &quot;gdp1.png&quot;), error = FALSE)</code></pre>
-<p><img src="/Users/jeffreykaikati/Documents/London Business School/Applied Statistics with R/Git Repo/LBS-MAM---Jeffrey-Kaikati/images/gdp1.png" width="100%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>knitr::include_graphics(&quot;/img/blogs/gdp1.png&quot;, error = FALSE)</code></pre>
+<p><img src="/img/blogs/gdp1.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># List of indicators of interest to replicate the graph. These are stored under the Indicator name column
 indicator_list = c(&quot;Gross capital formation&quot;, 
                    &quot;Exports of goods and services&quot;, 
@@ -489,7 +297,7 @@ tidy_GDP_data %&gt;%
       &quot;Household expenditure&quot;, 
       &quot;Imports&quot;)) +
   NULL</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-10-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-7-1.png" width="648" style="display: block; margin: auto;" /></p>
 <p>Secondly, recall that GDP is the sum of Household Expenditure (Consumption <em>C</em>), Gross Capital Formation (business investment <em>I</em>), Government Expenditure (G) and Net Exports (exports - imports). Even though there is an indicator <code>Gross Domestic Product (GDP)</code> in your dataframe, I would like you to calculate it given its components discussed above.</p>
 <pre class="r"><code># changing tidy_data to wide. Degrouping Indicator names to allow for easier calculations between these. 
 UN_GDP_estimation = tidy_GDP_data%&gt;%
@@ -531,17 +339,13 @@ UN_GDP_estimation %&gt;%
          caption = &quot;Green: Higher Calculated GDP than reported GDP \
          Red: Lower Calculated GDP than reported GDP&quot;)+
   NULL</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-11-1.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># This code can be used to see the percentage deviation by country and year. It is commented out so it doesn&#39;t appear on the knitted file. 
-#UN_GDP_estimation%&gt;%
-#  filter(Country %in% country_list)%&gt;%
-#  select(&quot;Country&quot;, &quot;year&quot;, &quot;percentage_deviation&quot;)</code></pre>
+<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-8-1.png" width="648" style="display: block; margin: auto;" /></p>
 <blockquote>
 <p>What is the % difference between what you calculated as GDP and the GDP figure included in the dataframe?</p>
 </blockquote>
 <p>For both Germany and the US, the calculated GDP was higher than the reported GDP from the 1970’s to the 2000. This difference was highest in the 70’s, of around a 4%, and has steadily decreased over time. Since the 2000’s, both countries report a GDP that is consistent with the sum of its components, thus having an almost 0% deviation.</p>
 <p>India on the other hand still has fluctuations on the percentage difference between the reported and calculated GDP. From 1970 until 1990, it reported a lower GDP than its calculated, peaking at a difference of 7.41% in 1979. However, from 1990 until this day, India reports a higher GDP than the sum of its components, except two exceptions in 2007 and 2010. In 2017, the last datapoint available, India’s reported GDP was 2% higher than its calculated.</p>
-<p><img src="/Users/jeffreykaikati/Documents/London Business School/Applied Statistics with R/Git Repo/LBS-MAM---Jeffrey-Kaikati/images/gdp2.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="/img/blogs/gdp2.png" width="100%" style="display: block; margin: auto;" /></p>
 <blockquote>
 <p>What is this last chart telling you? Can you explain in a couple of paragraphs the different dynamic among these three countries?</p>
 </blockquote>
