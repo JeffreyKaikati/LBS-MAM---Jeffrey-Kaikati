@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T21:28:43-05:00"
 description:
 draft: false
-image: pic10.jpg
+image: analytics.png
 keywords: ""
 slug: test
 title: Data Analytics & Visualisation
@@ -68,7 +68,7 @@ library(openintro)
 ```
 
 
-# Challenge 1: Replicating a chart
+# Challenge 1: Percentage vaccinated / Percentage voting for Trump
 
 The purpose of this challenge is to reproduce a plot using `dplyr` and `ggplot2` skills. 
 
@@ -112,7 +112,7 @@ population <- vroom(population_url) %>%
 ```
 
 
-```{r}
+```{r, out.width="100%"}
 #we are going to take a look at the data first and then we will have to merge the data
 
 population_vaccinations <- left_join(population, vaccinations, by="fips")
@@ -132,8 +132,7 @@ pve %>%
   scale_size_continuous(range = c(0.01, 5))+
   xlim(0,100)+
   ylim(0,100)+
-  labs(title = "COVID-19 VACCINATION LEVELS OUT OF TOTAL POPULATION BY COUNTY",
-        subtitle = "Most states on FULLY vaccinated only;CA, GA, IA, MI & TX based on total doses administered",
+  labs(title = "COVID-19 vaccination out of total population by county ",
          x = "2020 Trump Vote %", 
          y = "Percentage of Total Population Vaccinated",
          caption = "Centers for Disease Control, COVID Act NOW, state health depts")
@@ -245,7 +244,7 @@ Should you use the mean or the median to calculate your expected rentals? Why?
 
 
 
-# Challenge 3: Brexit plot
+# Challenge 3: Brexit voting
 
 Using your data manipulation and visualisation skills, please use the Brexit results dataframe (the same dataset you used in the pre-programme assignement) and produce the following plot. Use the correct colour for each party; google "UK Political Party Web Colours" and find the appropriate hex code for colours, not the default colours that R gives you.
 

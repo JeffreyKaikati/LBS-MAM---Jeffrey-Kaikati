@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T21:28:43-05:00"
 description:
 draft: false
-image: pic10.jpg
+image: analytics.png
 keywords: ""
 slug: test
 title: Data Analytics & Visualisation
@@ -14,8 +14,8 @@ title: Data Analytics & Visualisation
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<div id="challenge-1-replicating-a-chart" class="section level1">
-<h1>Challenge 1: Replicating a chart</h1>
+<div id="challenge-1-percentage-vaccinated-percentage-voting-for-trump" class="section level1">
+<h1>Challenge 1: Percentage vaccinated / Percentage voting for Trump</h1>
 <p>The purpose of this challenge is to reproduce a plot using <code>dplyr</code> and <code>ggplot2</code> skills.</p>
 <p>Read the article <a href="https://acasignups.net/21/07/18/racial-factor-theres-77-counties-which-are-deep-blue-also-low-vaxx-guess-what-they-have">The Racial Factor: There’s 77 Counties Which Are Deep Blue But Also Low-Vaxx. Guess What They Have In Common?</a> and have a look at the attached figure.</p>
 <ol style="list-style-type: decimal">
@@ -69,12 +69,11 @@ pve %&gt;%
   scale_size_continuous(range = c(0.01, 5))+
   xlim(0,100)+
   ylim(0,100)+
-  labs(title = &quot;COVID-19 VACCINATION LEVELS OUT OF TOTAL POPULATION BY COUNTY&quot;,
-        subtitle = &quot;Most states on FULLY vaccinated only;CA, GA, IA, MI &amp; TX based on total doses administered&quot;,
+  labs(title = &quot;COVID-19 vaccination out of total population by county &quot;,
          x = &quot;2020 Trump Vote %&quot;, 
          y = &quot;Percentage of Total Population Vaccinated&quot;,
          caption = &quot;Centers for Disease Control, COVID Act NOW, state health depts&quot;)</code></pre>
-<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/blogs/potpourri_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="challenge-2-excess-rentals-in-tfl-bike-sharing" class="section level1">
 <h1>Challenge 2: Excess rentals in TfL bike sharing</h1>
@@ -83,12 +82,12 @@ pve %&gt;%
 library(disk.frame)
 # Download TFL data to temporary file
 httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
-<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2021-08-23T14%3A32%3A29/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20210916%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210916T154658Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=4a80b704f5a2439349127eb9d0b9bf34d73a3515be73d29128308c3b3e760548&amp;X-Amz-SignedHeaders=host]
-##   Date: 2021-09-16 15:46
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2021-08-23T14%3A32%3A29/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20210919%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210919T163941Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=8669a03cc3a7de01dceb9f5ae1b5ef1ae54109d41dceb831717a58be0dba263f&amp;X-Amz-SignedHeaders=host]
+##   Date: 2021-09-19 16:39
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 173 kB
-## &lt;ON DISK&gt;  /var/folders/9l/m55q3p1j0z5b8bqn0kvk02b00000gn/T//Rtmp0FjP0Y/file2ec61c898af.xlsx</code></pre>
+## &lt;ON DISK&gt;  /var/folders/9l/m55q3p1j0z5b8bqn0kvk02b00000gn/T//RtmpMZ5NzO/file949535d32fe.xlsx</code></pre>
 <pre class="r"><code># Use read_excel to read it as dataframe
 bike0 &lt;- read_excel(bike.temp,
                    sheet = &quot;Data&quot;,
@@ -180,8 +179,8 @@ comparison_bike_w = comparison_bike_w %&gt;%
 <p>Should you use the mean or the median to calculate your expected rentals? Why?
 &gt; In order to calculate the expected rentals we used the mean of rented bikes/montly since we thought this was a better measurement. Since the monthly data of the actual rented bikes does not seem to be heavily right/left skewed, the mean is a good tool to calcukate the expected rentals. If the data were heavily skewed, we would have changed to the median.</p>
 </div>
-<div id="challenge-3-brexit-plot" class="section level1">
-<h1>Challenge 3: Brexit plot</h1>
+<div id="challenge-3-brexit-voting" class="section level1">
+<h1>Challenge 3: Brexit voting</h1>
 <p>Using your data manipulation and visualisation skills, please use the Brexit results dataframe (the same dataset you used in the pre-programme assignement) and produce the following plot. Use the correct colour for each party; google “UK Political Party Web Colours” and find the appropriate hex code for colours, not the default colours that R gives you.</p>
 <p><img src="/img/blogs/brexit.png" width="100%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># load data
